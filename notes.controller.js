@@ -22,6 +22,23 @@ async function addNote(title) {
 	console.log(chalk.green('Note was added'));
 }
 
+async function editNote(noteId, title) {
+	const notes = await getNotes();
+
+	const noteIndex = notes.findIndex(({id}) => noteId === id);
+
+	if (noteIndex === -1) {
+		console.log(chalk.red(`Note with id "${noteId}" not found!`));
+		return;
+	}
+
+	notes[noteIndex].title = title;
+
+	await fs.writeFile(notesPath, JSON.stringify(notes));
+
+	console.log(chalk.green(`Note with id ${noteId} was edited! New title is "${title}"`));
+}
+
 async function getNotes() {
 	// return require('./db.json');
 	const notesJSON = await fs.readFile(notesPath, {encoding: 'utf-8'});
@@ -61,5 +78,5 @@ async function removeNote(noteId) {
 }
 
 module.exports = {
-	addNote, printNotes, removeNote,
+	addNote, printNotes, removeNote, editNote,
 }
